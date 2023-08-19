@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect , useMutation } from 'react';
 import {
   Container,
   Col,
@@ -11,6 +11,9 @@ import {
 import Auth from '../utils/auth';
 import { saveBook, searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
+import { useMatch } from 'react-router-dom';
+import { SAVE_BOOK } from '../utils/mutations';
+import { GET_ME } from '../utils/queries';
 
 const SearchBooks = () => {
   // create state for holding returned google api data
@@ -72,7 +75,14 @@ const SearchBooks = () => {
     }
 
     try {
-      const response = await saveBook(bookToSave, token);
+      // const response = await saveBook(bookToSave, token);
+      const [saveBook, { error }] = useMutation
+      (SAVE_BOOK, {
+        refetchQueries: [
+          GET_ME,
+          'me'
+        ]
+      })
 
       if (!response.ok) {
         throw new Error('something went wrong!');
