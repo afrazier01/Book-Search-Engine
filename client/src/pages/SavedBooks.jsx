@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
   Container,
   Card,
@@ -8,7 +8,7 @@ import {
   Col
 } from 'react-bootstrap';
 
-import { getMe, deleteBook } from '../utils/API';
+// import { getMe, deleteBook } from '../utils/API';
 import Auth from '../utils/auth';
 import { removeBookId, saveBookIds } from '../utils/localStorage';
 import { useQuery , useMutation } from '@apollo/client';
@@ -16,15 +16,23 @@ import { GET_ME } from '../utils/queries';
 import { REMOVE_BOOK } from '../utils/mutations';
 
 const SavedBooks = () => {
-  
+  const { username } = useParams();
   const { loading, error, data } = useQuery(GET_ME, {
-    variables: {_id: bookId}});
+    variables: {username}
+  });
+  const [removeBook] = useMutation(REMOVE_BOOK)
+  // if data isn't here yet, say so
+  if (loading) {
+    return <h2>LOADING...</h2>;
+  }
+  const {me} = data
+  console.log(me)
+  let userData = me
 
-  const userData = data;
-  console.log(loading, error, data)
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;
+    
 
     if (!token) {
       return false;
@@ -33,10 +41,12 @@ const SavedBooks = () => {
     try {
       // const response = await deleteBook(bookId, token);
 
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
+      const {data} = await removeBook({
+        variables: {bookId}
+      })
 
+      console.log(data)
+      let userData = data
       // const updatedUser = await response.json();
       // setUserData(updatedUser);
       // upon success, remove book's id from localStorage
@@ -45,11 +55,6 @@ const SavedBooks = () => {
       console.error(err);
     }
   };
-
-  // if data isn't here yet, say so
-  // if (!userDataLength) {
-  //   return <h2>LOADING...</h2>;
-  // }
 
   return (
     <>
