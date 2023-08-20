@@ -10,7 +10,7 @@ This project entailed refactoring a fully functioning Google Books API search en
 
 ![Screenshot of deployed website](./assets/saved_books.png)
   
-Click [here]() to go to the deployed webpage on Heroku. 
+Click [here](https://taes-graphql-refactor-e0554ce8d232.herokuapp.com/) to go to the deployed webpage on Heroku. 
   
 
 ## Table of Contents
