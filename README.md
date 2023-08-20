@@ -10,7 +10,7 @@ This project entailed refactoring a fully functioning Google Books API search en
 
 ![Screenshot of deployed website](./assets/saved_books.png)
   
-Click [here]() to go to my deployed webpage on Heroku. 
+Click [here]() to go to the deployed webpage on Heroku. 
   
 
 ## Table of Contents
