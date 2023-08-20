@@ -44,13 +44,12 @@ const resolvers = {
 
       return { token, user };
     },
-    saveBook: async (parent, { input }) => {
-      console.log(`\n\nAdding the title "${input.title}" to the saved book list of the user with the ID: ${input.userId}\n\n`)
-        if (input) {
+    saveBook: async (parent, {authors,bookId,title,link,image,description}, context) => {
+        if (bookId) {
        return User.findOneAndUpdate(
-          { _id: input.userId },
+          { _id: context.user._id },
           {$addToSet: {
-            savedBooks: input
+            savedBooks: {authors: authors,bookId,title,link,image,description}
             }},
           {new: true}
         ); 

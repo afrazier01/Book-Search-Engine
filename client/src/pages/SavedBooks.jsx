@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Navigate, useParams } from 'react-router-dom';
 import {
   Container,
   Card,
@@ -9,15 +10,18 @@ import {
 
 import { getMe, deleteBook } from '../utils/API';
 import Auth from '../utils/auth';
-import { removeBookId } from '../utils/localStorage';
+import { removeBookId, saveBookIds } from '../utils/localStorage';
 import { useQuery , useMutation } from '@apollo/client';
 import { GET_ME } from '../utils/queries';
 import { REMOVE_BOOK } from '../utils/mutations';
 
 const SavedBooks = () => {
-  const { loading, data} = useQuery(GET_ME);
-  const userData = data?.userData ?? []
+  
+  const { loading, error, data } = useQuery(GET_ME, {
+    variables: {_id: bookId}});
 
+  const userData = data;
+  console.log(loading, error, data)
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;
@@ -28,14 +32,6 @@ const SavedBooks = () => {
 
     try {
       // const response = await deleteBook(bookId, token);
-
-      const [removeBook, { error }] = useMutation
-      (REMOVE_BOOK, {
-        refetchQueries: [
-          GET_ME,
-          'me'
-        ]
-      })
 
       if (!response.ok) {
         throw new Error('something went wrong!');
@@ -51,9 +47,9 @@ const SavedBooks = () => {
   };
 
   // if data isn't here yet, say so
-  if (!userDataLength) {
-    return <h2>LOADING...</h2>;
-  }
+  // if (!userDataLength) {
+  //   return <h2>LOADING...</h2>;
+  // }
 
   return (
     <>
